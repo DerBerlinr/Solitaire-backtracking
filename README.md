@@ -1,2 +1,2 @@
 # sOlIt-r-Br-HtTsPiEl
-aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
+TODO: feld Verkleinern

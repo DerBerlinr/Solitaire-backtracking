@@ -36,50 +36,54 @@ class Main:
                             print "horizontal rechts moeglich fuer Feld: ", i, j
                             return 1
                     # NOTE: horizontal links
-                    if not j < 2:
+                    elif not j < 2:
                         if self.field[i][j-2]==0 and self.field[i][j-1]==1:
                             print "horizontal links moeglich fuer Feld: ", i, j
                             return 2
                     # NOTE: vertikal oben
-                    if not i < 2:
+                    elif not i < 2:
                         if self.field[i-2][j]==0 and self.field[i-1][j]==1:
                             print "vertikal oben moeglich fuer Feld: ", i, j
                             return 3
                     # NOTE: vertikal unten
-                    if not i > 6:
+                    elif not i > 6:
                         if self.field[i+2][j]==0 and self.field[i+1][j]==1:
                             print "vertikal unten moeglich fuer Feld: ", i, j
                             return 4
-                return 0
+                    else:
+                        return 0
 
 
     def check_win(self):
+        counter = 0
         for i in range(9):
             for j in range(9):
-                if self.field[i][j]=1:
+                if self.field[i][j]==1:
                     counter+=1
         if counter == 1:
             return 1
+        else:
+            return 0
 
     def check_killmove_dir(self,dir):
         if not None:
             # NOTE: horizontal rechts
-            if not j > 6:
+            if not j > 6 and dir == 1:
                 if self.field[i][j+2]==0 and self.field[i][j+1]==1:
                     print "horizontal rechts moeglich fuer Feld: ", i, j
                     return 1
             # NOTE: horizontal links
-            if not j < 2:
+            if not j < 2 and dir == 2:
                 if self.field[i][j-2]==0 and self.field[i][j-1]==1:
                     print "horizontal links moeglich fuer Feld: ", i, j
                     return 2
             # NOTE: vertikal oben
-            if not i < 2:
+            if not i < 2 and dir == 3:
                 if self.field[i-2][j]==0 and self.field[i-1][j]==1:
                     print "vertikal oben moeglich fuer Feld: ", i, j
                     return 3
             # NOTE: vertikal unten
-            if not i > 6:
+            if not i > 6 and dir == 4:
                 if self.field[i+2][j]==0 and self.field[i+1][j]==1:
                     print "vertikal unten moeglich fuer Feld: ", i, j
                     return 4
@@ -125,22 +129,24 @@ class Main:
 
     def recursion(self, all_dir=[], next=0):
         # NOTE: all_dir gibt die Richtung aller Moves an, um diese Rueckgaengig zu machen
-        if check_killmove() != 0 and not check_win() and next == 1:
+        if self.check_killmove() != 0 and not self.check_win() and next == 1:
             for i in range(1, 4):
                 if check_killmove_dir(i):
                     play_killmove(check_killmove() + i)
             all_dir.append(check_killmove() + 1)
             recursion(all_dir)
-        if check_killmove() != 0 and not check_win():
-            play_killmove(check_killmove())
-            all_dir.append(check_killmove())
+        elif self.check_killmove() != 0 and not self.check_win() == 1:
+            self.play_killmove(self.check_killmove())
+            print "1."
+            all_dir.append(self.check_killmove())
             recursion(all_dir)
-        elif check_killmove() == 0 and not check_win():
+        elif self.check_killmove() == 0 and not self.check_win() == 1:
             # NOTE: keine zuege mehr
-            remove_killmove()
+            print all_dir
+            self.remove_killmove(all_dir[len(all_dir)-1])
             all_dir.pop()
             recursion(all_dir, 1)
-        elif check_killmove() == 0 and check_win():
+        elif self.check_killmove() == 0 and self.check_win():
             # NOTE: win
             exit()
 
