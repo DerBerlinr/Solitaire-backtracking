@@ -11,7 +11,7 @@ class Main:
                 else:
                     if i < 3 or i > 5:
                         if j < 3 or j > 5:
-                            temp.append(None)
+                            temp.append(5)
                         else:
                             temp.append(1)
                     else:
@@ -25,26 +25,22 @@ class Main:
             for j in range(9):
                 if self.field[i][j] == 1:
                     # NOTE: horizontal rechts
-                    if not j > 6:
-                        if self.field[i][j+2] == 0 and self.field[i][j+1] == 1:
-                            print "horizontal rechts moeglich fuer Feld: ", i + 1, j + 1
-                            return 1, i, j
+                    if self.field[i][j+2] == 0 and self.field[i][j+1] == 1:
+                        print "horizontal rechts moeglich fuer Feld: ", i + 1, j + 1
+                        return 1, i, j
                     # NOTE: horizontal links
-                    elif not j < 2:
-                        if self.field[i][j-2] == 0 and self.field[i][j-1] == 1:
-                            print "horizontal links moeglich fuer Feld: ", i+1, j+1
-                            return 2, i, j
-                    # NOTE: vertikal oben
-                    elif not i < 2:
-                        if self.field[i-2][j] == 0 and self.field[i-1][j] == 1:
-                            print "vertikal oben moeglich fuer Feld: ", i+1, j+1
-                            return 3, i, j
+                    elif self.field[i][j-2] == 0 and self.field[i][j-1] == 1:
+                        print "horizontal links moeglich fuer Feld: ", i+1, j+1
+                        return 2, i, j
+                    # NOTE: vertikal
+                    elif self.field[i-2][j] == 0 and self.field[i-1][j] == 1:
+                        print "vertikal oben moeglich fuer Feld: ", i+1, j+1
+                        return 3, i, j
                     # NOTE: vertikal unten
-                    elif not i > 6:
-                        if self.field[i+2][j] == 0 and self.field[i+1][j] == 1:
-                            print "vertikal unten moeglich fuer Feld: ", i+1, j+1
-                            return 4, i, j
-                    else:
+                    elif self.field[i+2][j] == 0 and self.field[i+1][j] == 1:
+                        print "vertikal unten moeglich fuer Feld: ", i+1, j+1
+                        return 4, i, j
+                    elif 0:
                         return 0, 0, 0
 
     def check_win(self):
@@ -129,11 +125,12 @@ class Main:
         # NOTE: all_dir gibt die Richtung aller Moves an, um diese Rueckgaengig zu machen
         if self.check_killmove() != 0 and not self.check_win() and next == 1:
             for i in range(1, 4):
-                if check_killmove_dir(i):
-                    play_killmove(check_killmove() + i)
-            all_dir.append(check_killmove() + 1)
+                if self.check_killmove_dir(i):
+                    self.play_killmove(self.check_killmove() + i)
+            all_dir.append(self.check_killmove() + 1)
             recursion(all_dir)
         elif self.check_killmove() != 0 and not self.check_win() == 1:
+            print " "
             aa, bb, cc = self.check_killmove()
             self.play_killmove(aa, bb, cc)
             print "1."
