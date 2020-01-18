@@ -1,10 +1,8 @@
 class Main:
     def __init__(self):
-        counter=0
-
+        self.field = []
 
     def create_field(self):
-        self.field = []
         temp = []
         for i in range(9):
             for j in range(9):
@@ -22,66 +20,63 @@ class Main:
             self.field.append(temp)
             temp = []
 
-
-
     def check_killmove(self):
         for i in range(9):
             for j in range(9):
                 if self.field[i][j] == 1:
                     # NOTE: horizontal rechts
                     if not j > 6:
-                        if self.field[i][j+2]==0 and self.field[i][j+1]==1:
-                            print "horizontal rechts moeglich fuer Feld: ", i, j
-                            return 1, i , j
+                        if self.field[i][j+2] == 0 and self.field[i][j+1] == 1:
+                            print "horizontal rechts moeglich fuer Feld: ", i + 1, j + 1
+                            return 1, i, j
                     # NOTE: horizontal links
                     elif not j < 2:
-                        if self.field[i][j-2]==0 and self.field[i][j-1]==1:
-                            print "horizontal links moeglich fuer Feld: ", i, j
+                        if self.field[i][j-2] == 0 and self.field[i][j-1] == 1:
+                            print "horizontal links moeglich fuer Feld: ", i+1, j+1
                             return 2, i, j
                     # NOTE: vertikal oben
                     elif not i < 2:
-                        if self.field[i-2][j]==0 and self.field[i-1][j]==1:
-                            print "vertikal oben moeglich fuer Feld: ", i, j
+                        if self.field[i-2][j] == 0 and self.field[i-1][j] == 1:
+                            print "vertikal oben moeglich fuer Feld: ", i+1, j+1
                             return 3, i, j
                     # NOTE: vertikal unten
                     elif not i > 6:
-                        if self.field[i+2][j]==0 and self.field[i+1][j]==1:
-                            print "vertikal unten moeglich fuer Feld: ", i, j
+                        if self.field[i+2][j] == 0 and self.field[i+1][j] == 1:
+                            print "vertikal unten moeglich fuer Feld: ", i+1, j+1
                             return 4, i, j
                     else:
                         return 0, 0, 0
-
 
     def check_win(self):
         counter = 0
         for i in range(9):
             for j in range(9):
-                if self.field[i][j]==1:
-                    counter+=1
+                if self.field[i][j] == 1:
+                    counter += 1
         if counter == 1:
             return 1
         else:
             return 0
 
-    def check_killmove_dir(self,dir):
+    def check_killmove_dir(self, direction):
         if not None:
             # NOTE: horizontal rechts
-            if not j > 6 and dir == 1:
+            if not j > 6 and direction == 1:
                 if self.field[i][j+2]==0 and self.field[i][j+1]==1:
                     print "horizontal rechts moeglich fuer Feld: ", i, j
                     return 1
             # NOTE: horizontal links
-            if not j < 2 and dir == 2:
+            if not j < 2 and direction == 2:
                 if self.field[i][j-2]==0 and self.field[i][j-1]==1:
                     print "horizontal links moeglich fuer Feld: ", i, j
                     return 2
             # NOTE: vertikal oben
-            if not i < 2 and dir == 3:
+            if not i < 2 and direction == 3:
                 if self.field[i-2][j]==0 and self.field[i-1][j]==1:
                     print "vertikal oben moeglich fuer Feld: ", i, j
                     return 3
             # NOTE: vertikal unten
-            if not i > 6 and dir == 4:
+            if not i > 6 and direction == 4:
                 if self.field[i+2][j]==0 and self.field[i+1][j]==1:
                     print "vertikal unten moeglich fuer Feld: ", i, j
                     return 4
