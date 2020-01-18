@@ -4,13 +4,13 @@ class Main:
 
     def create_field(self):
         temp = []
-        for i in range(9):
-            for j in range(9):
-                if i == 4 and j == 4:
+        for i in range(7):
+            for j in range(7):
+                if i == 3 and j == 3:
                     temp.append(0)
                 else:
-                    if i < 3 or i > 5:
-                        if j < 3 or j > 5:
+                    if i < 2 or i > 4:
+                        if j < 2 or j > 4:
                             temp.append(5)
                         else:
                             temp.append(1)
@@ -21,32 +21,34 @@ class Main:
             temp = []
 
     def check_killmove(self):
-        for i in range(9):
-            for j in range(9):
+        for i in range(7):
+            for j in range(7):
                 if self.field[i][j] == 1:
                     # NOTE: horizontal rechts
-                    if self.field[i][j+2] == 0 and self.field[i][j+1] == 1:
-                        print "horizontal rechts moeglich fuer Feld: ", i + 1, j + 1
-                        return 1, i, j
+                    if j <= 4:
+                        if self.field[i][j+2] == 0 and self.field[i][j+1] == 1:
+                            print "horizontal rechts moeglich fuer Feld: ", i + 1, j + 1
+                            return 1, i, j
                     # NOTE: horizontal links
-                    elif self.field[i][j-2] == 0 and self.field[i][j-1] == 1:
-                        print "horizontal links moeglich fuer Feld: ", i+1, j+1
-                        return 2, i, j
+                    if j >= 2:
+                        if self.field[i][j-2] == 0 and self.field[i][j-1] == 1:
+                            print "horizontal links moeglich fuer Feld: ", i+1, j+1
+                            return 2, i, j
                     # NOTE: vertikal
-                    elif self.field[i-2][j] == 0 and self.field[i-1][j] == 1:
-                        print "vertikal oben moeglich fuer Feld: ", i+1, j+1
-                        return 3, i, j
+                    if i >= 2:
+                        if self.field[i-2][j] == 0 and self.field[i-1][j] == 1:
+                            print "vertikal oben moeglich fuer Feld: ", i+1, j+1
+                            return 3, i, j
                     # NOTE: vertikal unten
-                    elif self.field[i+2][j] == 0 and self.field[i+1][j] == 1:
-                        print "vertikal unten moeglich fuer Feld: ", i+1, j+1
-                        return 4, i, j
-                    elif 0:
-                        return 0, 0, 0
+                    if i <= 4:
+                        if self.field[i+2][j] == 0 and self.field[i+1][j] == 1:
+                            print "vertikal unten moeglich fuer Feld: ", i+1, j+1
+                            return 4, i, j
 
     def check_win(self):
         counter = 0
-        for i in range(9):
-            for j in range(9):
+        for i in range(7):
+            for j in range(7):
                 if self.field[i][j] == 1:
                     counter += 1
         if counter == 1:
@@ -78,24 +80,23 @@ class Main:
                     return 4
         return 0
 
-
     def play_killmove(self, dir, i, j):
         if dir == 1:
-            self.field[i][j]=0
-            self.field[i][j+2]=1
-            self.field[i][j+1]=0
+            self.field[i][j] = 0
+            self.field[i][j+2] = 1
+            self.field[i][j+1] = 0
         if dir == 2:
-            self.field[i][j]=0
-            self.field[i][j-2]=1
-            self.field[i][j-1]=0
+            self.field[i][j] = 0
+            self.field[i][j-2] = 1
+            self.field[i][j-1] = 0
         if dir == 3:
-            self.field[i][j]=0
-            self.field[i-2][j]=1
-            self.field[i-1][j]=0
+            self.field[i][j] = 0
+            self.field[i-2][j] = 1
+            self.field[i-1][j] = 0
         if dir == 4:
-            self.field[i][j]=0
-            self.field[i+2][j]=1
-            self.field[i+1][j]=0
+            self.field[i][j] = 0
+            self.field[i+2][j] = 1
+            self.field[i+1][j] = 0
 
     def remove_killmove(self, dir):
         if dir == 1:
@@ -116,9 +117,8 @@ class Main:
             self.field[i+1][j]=1
 
     def print_field(self):
-        for k in range(9):
+        for k in range(7):
             print self.field[k]
-
 
     def recursion(self, all_dir=[], next=0):
         self.print_field()
@@ -128,7 +128,7 @@ class Main:
                 if self.check_killmove_dir(i):
                     self.play_killmove(self.check_killmove() + i)
             all_dir.append(self.check_killmove() + 1)
-            recursion(all_dir)
+            self.recursion(all_dir)
         elif self.check_killmove() != 0 and not self.check_win() == 1:
             print " "
             aa, bb, cc = self.check_killmove()
@@ -141,7 +141,7 @@ class Main:
             print all_dir
             self.remove_killmove(all_dir[len(all_dir)-1])
             all_dir.pop()
-            recursion(all_dir, 1)
+            self.recursion(all_dir, 1)
         elif self.check_killmove() == 0 and self.check_win():
             # NOTE: win
             exit()
