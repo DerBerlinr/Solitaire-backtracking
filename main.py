@@ -21,6 +21,8 @@ class Main:
             temp = []
 
     def check_killmove(self, next=0):
+        # NOTE: Die next-vielte Loesung wird zurueckgegeben
+        # NOTE: Es wird bei einer gefundenen Loesung immer die (Richtung, y-Koordinate, x-Koordinate) zurueckgegeben
         counter = 0
         for y in range(7):
             for x in range(7):
@@ -41,7 +43,7 @@ class Main:
                                 return 2, y, x
                             else:
                                 counter += 1
-                    # NOTE: vertikal
+                    # NOTE: vertikal oben
                     if y >= 2:
                         if self.field[y - 2][x] == 0 and self.field[y - 1][x] == 1:
                             if counter == next:
@@ -136,55 +138,92 @@ class Main:
         for k in range(7):
             print self.field[k]
 
-    def recursion(self, all_dir=[], all_pos=[], next=0):
+    def recursion(self, nr=[], all_dir=[], all_pos=[], next=0, kill=False):
+        # nr      = [(Wievielte Rekursion, Anzahl der Loesungen, probierte L.), ("","","")a, ...]
+        # all_dir = [Richtung Schritt 1, Richtung Schritt 2, ...]
+        # all_pos = [(y-Koordinate Schritt 1, x-Koordinate Schritt 1), (y-Koordinate Schritt 2, x-Koordinate Schritt 2), ...]
+        # next    : naechste Loesung im Aktuellen Schritt (veraltet)
+        # kill    : soll ein Schritt entfernt werden? Ja: True Nein: False
         self.print_field()
-        # NOTE: all_dir gibt die Richtung aller Moves an, um diese Rueckgaengig zu machen
-        # TODO: geht alles eigentlich, nur in der Praxis nicht
-        kill = False
-        if self.check_killmove() != (0, 0, 0) and not self.check_win() and next == 1:
-            dir, y, x = self.check_killmove()
+
+        if nr == []:
+            count = 0
+        else:
+            a, count, b = nr[len(nr)-1]
+            count += 1
+        p = 0
+        for l in range(9999999):
+            if self.check_killmove(l) != (0, 0, 0):
+                p += 1
+            else:
+                break
+
+
+        # all_dir gibt die Richtung aller Moves an, um diese Rueckgaengig zu machen
+        if self.check_killmove() != (0, 0, 0) and not self.check_win() and next == 1 and kill == False:
             last_y, last_x = all_pos[len(all_pos)-1]
-            print ""
-            print all_dir
-            print ""
-            print self.check_killmove_dir(all_dir[len(all_dir) - 1], y, x)
-            print (all_dir[len(all_dir)-1], last_y, last_x)
             counter = 0
-            while True:
-                counter += 1
-                m, n, o = self.check_killmove(counter)
-                if self.check_killmove_dir(m, n, o) != (0, 0, 0) and self.check_killmove_dir(m, n, o) != (all_dir[len(all_dir)-1], last_y, last_x):
-                    print "drin"
-                    self.play_killmove(m, n, o)
-                    all_dir.append(m)
-                    all_pos.append((n, o))
-                    self.recursion(all_dir, all_pos)
-                    break
-                else:
-                    print "nicht drin"
-                    kill = True
-                    break
-        if self.check_killmove() != (0, 0, 0) and not self.check_win() == 1 and kill == False:
+
+
+            if nr == []:
+                probiert = 0
+            else:
+                a, b, probiert = nr[len(nr)-1]
+            if p == probiert and self.check_win() == False:
+                temp = (count, p, probiert)
+                nr.append(temp)
+                self.recursion(nr, all_dir, all_pos, 0, True)
+                # p -> Anzahl der Loesungen, count -> Tiefe der Rekursion, probiert -> Anzahl der bereits probierten Loesungen
+                # NOTE: je nach "tiefe" altes p aufrufen und erhoehen
+
+
+            else:
+                while True:
+                    counter += 1
+                    m, n, o = self.check_killmove(counter)
+                    if self.check_killmove_dir(m, n, o) != (0, 0, 0) and self.check_killmove_dir(m, n, o) != (all_dir[len(all_dir)-1], last_y, last_x):
+                        # Wenn ein neuer Zug geht und dieser noch nicht gemacht wurde                                       TODO: last_y und last_x verbessern
+                        self.play_killmove(m, n, o)
+                        all_dir.append(m)
+                        all_pos.append((n, o))
+                        sidugb, sadkfb, probiert = nr[len(nr)-1]
+                        nr.pop()
+                        temp = (count, p, probiert+1)
+                        nr.append(temp)
+                        self.recursion(nr, all_dir, all_pos)
+                        break
+                    else:
+                        self.recursion(nr, all_dir, all_pos, 0, True)
+                        break
+
+
+        elif self.check_killmove() != (0, 0, 0) and not self.check_win() == 1 and kill == False:
             aa, bb, cc = self.check_killmove()
             self.play_killmove(aa, bb, cc)
             print "1."
             all_dir.append(aa)
             all_pos.append((bb, cc))
-            self.recursion(all_dir)
-        if self.check_killmove() == (0, 0, 0) and not self.check_win() == 1 or kill == True:
-            # NOTE: keine zuege mehr
+            temp = (count, p, 1)
+            nr.append(temp)
+            self.recursion(nr, all_dir)
+
+
+        elif self.check_killmove() == (0, 0, 0) and not self.check_win() == 1 or kill == True:
+            # NOTE: keine zuege mehr, initialisiert einen Zug rueckwaerts!
             print ""
             print "2."
             print ""
-            y_old, x_old = all_pos[len(all_pos) - 1]
+            y_old, x_old = all_pos[len(all_pos) - 1]                                                                            # TODO: y_old und x_old verbessern
             print y_old+1
             print x_old+1
             self.remove_killmove(all_dir[len(all_dir) - 1], y_old, x_old)
-            all_pos.pop()
             all_dir.pop()
-            self.recursion(all_dir, all_pos, 1)
-        if self.check_killmove() == 0 and self.check_win():
-            # NOTE: win
+            all_pos.pop()
+            self.recursion(nr, all_dir, all_pos, 1)
+
+
+        elif self.check_killmove() == 0 and self.check_win():
+            # NOTE: win, ez lul
             exit()
 
     def kys(self):
