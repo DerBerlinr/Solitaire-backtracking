@@ -149,7 +149,7 @@ class Main:
         if nr == []:
             count = 0
         else:
-            a, count, b = nr[len(nr)-1]
+            count, a, b = nr[len(nr)-1]
             count += 1
         p = 0
         for l in range(9999999):
@@ -157,6 +157,12 @@ class Main:
                 p += 1
             else:
                 break
+
+        if count == 37:
+            print ""
+
+        while len(nr) != len(all_dir) and len(nr) != len(all_dir)-1:
+            nr.pop()
 
 
         # all_dir gibt die Richtung aller Moves an, um diese Rueckgaengig zu machen
@@ -169,7 +175,7 @@ class Main:
                 probiert = 0
             else:
                 a, b, probiert = nr[len(nr)-1]
-            if p == probiert and self.check_win() == False:
+            if p == probiert and self.check_win() == 0:
                 temp = (count, p, probiert)
                 nr.append(temp)
                 self.recursion(nr, all_dir, all_pos, 0, True)
@@ -197,7 +203,7 @@ class Main:
                         break
 
 
-        elif self.check_killmove() != (0, 0, 0) and not self.check_win() == 1 and kill == False:
+        elif self.check_killmove() != (0, 0, 0) and self.check_win() == 0 and kill == False:
             aa, bb, cc = self.check_killmove()
             self.play_killmove(aa, bb, cc)
             print "1."
@@ -208,7 +214,7 @@ class Main:
             self.recursion(nr, all_dir)
 
 
-        elif self.check_killmove() == (0, 0, 0) and not self.check_win() == 1 or kill == True:
+        elif self.check_killmove() == (0, 0, 0) and self.check_win() == 0 or kill == True:
             # NOTE: keine zuege mehr, initialisiert einen Zug rueckwaerts!
             print ""
             print "2."
