@@ -31,7 +31,6 @@ class Main:
                     if x <= 4:
                         if self.field[y][x + 2] == 0 and self.field[y][x + 1] == 1:
                             if counter == next:
-                                print "horizontal rechts moeglich fuer Feld: ", y + 1, x + 1
                                 return 1, y, x
                             else:
                                 counter += 1
@@ -39,7 +38,6 @@ class Main:
                     if x >= 2:
                         if self.field[y][x - 2] == 0 and self.field[y][x - 1] == 1:
                             if counter == next:
-                                print "horizontal links moeglich fuer Feld: ", y + 1, x + 1
                                 return 2, y, x
                             else:
                                 counter += 1
@@ -47,7 +45,6 @@ class Main:
                     if y >= 2:
                         if self.field[y - 2][x] == 0 and self.field[y - 1][x] == 1:
                             if counter == next:
-                                print "vertikal oben moeglich fuer Feld: ", y + 1, x + 1
                                 return 3, y, x
                             else:
                                 counter += 1
@@ -55,7 +52,6 @@ class Main:
                     if y <= 4:
                         if self.field[y + 2][x] == 0 and self.field[y + 1][x] == 1:
                             if counter == next:
-                                print "vertikal unten moeglich fuer Feld: ", y + 1, x + 1
                                 return 4, y, x
                             else:
                                 counter +=1
@@ -79,22 +75,18 @@ class Main:
             # NOTE: horizontal rechts
             if not x > 5 and direction == 1:
                 if self.field[y][x + 2] == 0 and self.field[y][x + 1] == 1:
-                    print "horizontal rechts moeglich fuer Feld: ", y+1, x+1
                     return 1, y, x
             # NOTE: horizontal links
             if not x < 2 and direction == 2:
                 if self.field[y][x - 2] == 0 and self.field[y][x - 1] == 1:
-                    print "horizontal links moeglich fuer Feld: ", y+1, x+1
                     return 2, y, x
             # NOTE: vertikal oben
             if not y < 2 and direction == 3:
                 if self.field[y - 2][x] == 0 and self.field[y - 1][x] == 1:
-                    print "vertikal oben moeglich fuer Feld: ", y+1, x+1
                     return 3, y, x
             # NOTE: vertikal unten
             if y < 5 and direction == 4:
                 if self.field[y + 2][x] == 0 and self.field[y + 1][x] == 1:
-                    print "vertikal unten moeglich fuer Feld: ", y+1, x+1
                     return 4, y, x
         return 0, 0, 0
 
@@ -144,7 +136,7 @@ class Main:
         # all_pos = [(y-Koordinate Schritt 1, x-Koordinate Schritt 1), (y-Koordinate Schritt 2, x-Koordinate Schritt 2), ...]
         # next    : naechste Loesung im Aktuellen Schritt (veraltet)
         # kill    : soll ein Schritt entfernt werden? Ja: True Nein: False
-        self.print_field()
+        print nr
 
         if nr == []:
             count = 0
@@ -158,8 +150,6 @@ class Main:
             else:
                 break
 
-        if count == 37:
-            print ""
 
         while len(nr) != len(all_dir) and len(nr) != len(all_dir)-1:
             nr.pop()
@@ -206,7 +196,6 @@ class Main:
         elif self.check_killmove() != (0, 0, 0) and self.check_win() == 0 and kill == False:
             aa, bb, cc = self.check_killmove()
             self.play_killmove(aa, bb, cc)
-            print "1."
             all_dir.append(aa)
             all_pos.append((bb, cc))
             temp = (count, p, 1)
@@ -216,12 +205,7 @@ class Main:
 
         elif self.check_killmove() == (0, 0, 0) and self.check_win() == 0 or kill == True:
             # NOTE: keine zuege mehr, initialisiert einen Zug rueckwaerts!
-            print ""
-            print "2."
-            print ""
             y_old, x_old = all_pos[len(all_pos) - 1]                                                                            # TODO: y_old und x_old verbessern
-            print y_old+1
-            print x_old+1
             self.remove_killmove(all_dir[len(all_dir) - 1], y_old, x_old)
             all_dir.pop()
             all_pos.pop()
